@@ -31,7 +31,7 @@
 (defn enqueue-and-pub [pub-fn]
   (loop [q (agent '()) ct -queue-len]
     (if (= ct 0)
-                  ; TODO: add error handling here if publishing fails for this queue
+      ; TODO: add error handling here if publishing fails for this queue
       (send q pub-fn)
       (do (send q -store-ts (-handle-http -read-cpu))
           (recur q (dec ct))))))
