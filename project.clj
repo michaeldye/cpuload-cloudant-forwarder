@@ -7,10 +7,7 @@
     :min-lein-version "2.0.0"
     :dependencies [[org.clojure/clojure "1.9.0"]
                    [org.clojure/data.json "0.2.6"]
-                   [javax.json/javax.json-api "1.0"]
-                   [org.glassfish/javax.json "1.0.4"]
                    [clj-http "3.7.0"]
-                   [com.spoon16/clj-gson "0.0.1"]
                    [com.cloudant/cloudant-client "2.11.0"]
                    [com.taoensso/timbre "4.10.0"]]
     :plugins [[lein-cljfmt "0.5.7"]]
