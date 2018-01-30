@@ -10,7 +10,7 @@
       (.parse (java.text.NumberFormat/getInstance) env)
       50)))
 
-(def ^:const -service-url (or (System/getenv "CPULOAD_SERVICE_URL") "http://cpuload:8347/"))
+(def -service-url (or (System/getenv "CPULOAD_SERVICE_URL") "http://cpuload:8347/"))
 
 (defn -store-ts [queue datum] (if (not (nil? datum)) (conj queue datum) queue))
 
@@ -22,13 +22,14 @@
                      (if (== status 200)
                        (let [m (json/read-str body :key-fn keyword) ts (.toString (java.time.Instant/now)) host (.getHostName (java.net.InetAddress/getLocalHost))]
                          (info (format "Use on all CPUs %s%s, ts: %s, hostname: %s" (:cpu m) "%" ts host))
-                         {:percent (:cpu m) :ts ts :host host})
+                         { "percent" (:cpu m) "ts" ts "host" host})
                        (do
                          (info (format "Unexpected status code: %d. Headers: %s, Body: %s" status headers body))
                          {}))))
 
 ; use agent for the queue so we can get async publishing
 (defn enqueue-and-pub [pub-fn]
+  (info (format "Using CPU service URL: %s" -service-url))
   (loop [q (agent '()) ct -queue-len]
     (if (= ct 0)
       ; TODO: add error handling here if publishing fails for this queue

@@ -5,9 +5,9 @@
   (:gen-class))
 (timbre/refer-timbre)
 
-(def ^:const -cloudant-url (or (System/getenv "CPULOAD_CLOUDANT_URL") ""))
-(def ^:const -cloudant-username (or (System/getenv "CPULOAD_CLOUDANT_USERNAME") ""))
-(def ^:const -cloudant-password (or (System/getenv "CPULOAD_CLOUDANT_PASSWORD") ""))
+(def -cloudant-url (or (System/getenv "CPULOAD_CLOUDANT_URL") ""))
+(def -cloudant-username (or (System/getenv "CPULOAD_CLOUDANT_USERNAME") ""))
+(def -cloudant-password (or (System/getenv "CPULOAD_CLOUDANT_PASSWORD") ""))
 
 ; TODO: collapse with other error handler
 (defn -handle-ex [f & args] (try (apply f args)
@@ -20,4 +20,7 @@
       (info (format "Responses: %s" (.bulk db (java.util.ArrayList. data)))))))
 
 (defn -main [& args]
+  (info (format "Cloudant URL: %s" -cloudant-url))
+  (info (format "Cloudant username: %s" -cloudant-username))
+  (info (format "Cloudant password: %s" (if (empty? -cloudant-password) "<unset>" "<set but redacted>")))
   (while true (do (tsdata/enqueue-and-pub (partial -handle-ex my-pub)))))
